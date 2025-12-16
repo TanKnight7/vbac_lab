@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets
 from rest_framework.exceptions import PermissionDenied
 from .models import Post
-from .serializers import PostSerializer
+from .serializers import PostSerializer, PostCreateSerializer, PostUpdateSerializer
 from user.permissions import AnyOfGroups
 from django.db import models
 
@@ -23,6 +23,13 @@ class PostViewSet(viewsets.ModelViewSet):
         }
         return actions.get(self.action, [permissions.AND(permissions.IsAuthenticated(), permissions.NOT(permissions.IsAuthenticated()))])
     
+    def get_serializer_class(self):
+        if self.action == "create":
+            return PostCreateSerializer
+        
+        if self.action == "update":
+            return PostUpdateSerializer
+        return PostSerializer
     
     # === CREATE POST, status is draft by default ===
     def perform_create(self, serializer):
