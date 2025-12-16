@@ -16,7 +16,6 @@ class MediaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         actions = {
             'create': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator', 'Editor', 'Author')],
-            'update': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
             'destroy': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
             'retrieve': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber')],
             'list': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator', 'Editor', 'Author', 'Contributor', 'Subscriber')],
@@ -27,18 +26,12 @@ class MediaViewSet(viewsets.ModelViewSet):
     # === CREATE POST, status is draft by default ===
     def perform_create(self, serializer):
         user = self.request.user
-        
         serializer.save(author=user)
-    
-    # === UPDATE POST ===
-    def perform_update(self, serializer):
-        user = self.request.user
-        instance = serializer.instance
-        serializer.save(author=instance.author)
-    
     
     # === DELETE POST ===
     def perform_destroy(self, instance):
+        if instance.file:
+            instance.file.delete(save=False)
         instance.delete()
         
 
