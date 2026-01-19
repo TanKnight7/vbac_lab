@@ -1,7 +1,7 @@
 import sqlite3
 import re
 def get_data(table):
-    conn = sqlite3.connect("databasetestinggg.db")
+    conn = sqlite3.connect("mcp_database.db")
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM {table}")
     data = cursor.fetchall()
