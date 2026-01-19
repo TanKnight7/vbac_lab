@@ -18,10 +18,10 @@ class ThemeViewSet(viewsets.ModelViewSet):
     
     def get_permissions(self):
         actions = {
-            'create': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin')],
+            'create': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Editor')],
             'update': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
             'destroy': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
-            'retrieve': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
+            'retrieve': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator', 'Author')],
             'list': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
             'activate': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')]
         }

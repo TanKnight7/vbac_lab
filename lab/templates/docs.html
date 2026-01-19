@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VBAC Lab API Documentation</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        color: #2c3e50;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      h3 {
+        color: #34495e;
+        margin-top: 24px;
+        font-size: 1.25em;
+      }
+      h4 {
+        color: #7f8c8d;
+        margin-top: 20px;
+      }
+
+      /* Details/Summary Styles */
+      details {
+        background: #fff;
+        margin-bottom: 10px;
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+      summary {
+        cursor: pointer;
+        padding: 12px;
+        background-color: #f6f8fa;
+        border-radius: 6px;
+        font-weight: 600;
+        outline: none;
+        list-style: none;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      summary:after {
+        content: "+";
+        float: right;
+        font-weight: bold;
+      }
+      details[open] summary:after {
+        content: "-";
+      }
+      details[open] summary {
+        border-bottom: 1px solid #e1e4e8;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      details > div {
+        padding: 15px;
+      }
+
+      /* Nested Details */
+      details details {
+        margin-left: 15px;
+        margin-right: 15px;
+        margin-top: 15px;
+        border: 1px solid #eee;
+      }
+
+      /* Code Blocks */
+      pre {
+        background-color: #f6f8fa;
+        border-radius: 6px;
+        padding: 16px;
+        overflow-x: auto;
+        font-size: 85%;
+        line-height: 1.45;
+        border: 1px solid #e1e4e8;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+          Liberation Mono, monospace;
+      }
+
+      /* Lists */
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      li {
+        margin-bottom: 8px;
+      }
+      li strong {
+        color: #24292e;
+        display: inline-block;
+        width: 120px;
+        vertical-align: top;
+      }
+
+      /* Table */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px 0;
+        font-size: 0.9em;
+      }
+      th,
+      td {
+        border: 1px solid #dfe2e5;
+        padding: 8px 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #f6f8fa;
+        font-weight: 600;
+      }
+      td {
+        color: #24292e;
+      }
+      /* Center checkmarks */
+      td:nth-child(n + 3),
+      th:nth-child(n + 3) {
+        text-align: center;
+      }
+
+      /* Role badges could be added here if desired */
+    </style>
+  </head>
+  <body>
+    <h1>VBAC Lab API Documentation</h1>
+
+    <details>
+      <summary>Authentication</summary>
+      <div>
+        <h3>POST /api/login/</h3>
+        <ul>
+          <li>
+            <strong>Description:</strong>
+            Authenticate a user and retrieve a token.
+          </li>
+        </ul>
+
+        <p><strong>Request</strong></p>
+        <pre><code>POST /api/login/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 49
+Content-Type: application/json
+
+{"username":"subscriber","password":"subscriber"}</code></pre>
+
+        <p><strong>Response:</strong></p>
+        <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"token":"2cc76ee3a344307c6d3a37a99260adba81359bc2"}</code></pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>Authorization</summary>
+      <div>
+        <ul>
+          <li>
+            <strong>Description:</strong>
+            This apps authorize user to access API via Authorization header.
+          </li>
+        </ul>
+
+        <p><strong>Request</strong></p>
+        <pre><code>GET /api/&lt;endpoint&gt; HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;token&gt;</code></pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>User Management</summary>
+      <div>
+        <details>
+          <summary>Users</summary>
+          <div>
+            <h4>Permissions Matrix</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Super Admin</th>
+                  <th>Administrator</th>
+                  <th>Editor</th>
+                  <th>Author</th>
+                  <th>Contributor</th>
+                  <th>Subscriber</th>
+                  <th>Anonymous</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>
+                      create_users
+                      <br />
+                      (POST /api/users/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>
+                      read_users
+                      <br />
+                      (GET /api/users/{id}/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>
+                      list_users
+                      <br />
+                      (GET /api/users/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>
+                      edit_users
+                      <br />
+                      (PUT /api/users/{id}/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>
+                      delete_users
+                      <br />
+                      (DELETE /api/users/{id}/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>GET /api/users/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                List all users. Only Super Admin and Administrator can view the
+                user list.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/users/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+[{"id":&lt;id1&gt;,
+"username":"&lt;username1&gt;",
+"email":"&lt;email1&gt;",
+"groups":["&lt;groups1&gt;"]},
+
+{"id":&lt;id2&gt;,
+"username":"&lt;username2&gt;",
+"email":"&lt;email2&gt;",
+"groups":["&lt;groups2&gt;"]}]</code></pre>
+
+            <h3>POST /api/users/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Create a new user. Rank validation applies (cannot assign role
+                higher than own).
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/users/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+Content-Length: 101
+
+{"username":"&lt;username&gt;",
+"password":"&lt;password&gt;",
+"email":"&lt;email&gt;",
+"groups":[
+"&lt;groups&gt;"]}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+"username":"&lt;username&gt;",
+"email":"&lt;email&gt;",
+"groups":["&lt;groups&gt;"]}</code></pre>
+
+            <h3>GET /api/users/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Retrieve user details.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/users/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+"username":"&lt;username&gt;",
+"email":"&lt;email&gt;",
+"groups":["&lt;groups&gt;"]}</code></pre>
+
+            <h3>PUT /api/users/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Update user details. Cannot edit users with higher role rank.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>PUT /api/users/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+Content-Length: 103
+
+{"username":"&lt;username&gt;",
+"password":"&lt;password&gt;",
+"email":"&lt;email&gt;",
+"groups":[
+"&lt;groups&gt;"]}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+"username":"&lt;username&gt;",
+"email":"&lt;email&gt;",
+"groups":["&lt;groups&gt;"]}</code></pre>
+
+            <h3>DELETE /api/users/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Delete a user. Cannot delete users with higher role rank.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>DELETE /api/users/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+
+</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 204 No Content
+Content-Type: application/json</code></pre>
+          </div>
+        </details>
+
+        <details>
+          <summary>Groups</summary>
+          <div>
+            <h4>Permissions Matrix</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Super Admin</th>
+                  <th>Administrator</th>
+                  <th>Editor</th>
+                  <th>Author</th>
+                  <th>Contributor</th>
+                  <th>Subscriber</th>
+                  <th>Anonymous</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>create_groups (POST /api/groups/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>read_groups (GET /api/groups/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>list_groups (GET /api/groups/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>edit_groups (PUT /api/groups/{id}/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>delete_groups (DELETE /api/groups/{id}/)</strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>GET /api/groups/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                List all groups.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/groups/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+[{"id":&lt;id1&gt;,
+"name":"&lt;name1&gt;"}, 
+
+{"id":&lt;id2&gt;,
+"name":"&lt;name2&gt;"}]</code></pre>
+
+            <h3>GET /api/groups/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Retrieve group details by id.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/groups/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+"name":"&lt;name&gt;"}
+
+</code></pre>
+
+            <h3>POST /api/groups/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Create a new group.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/groups/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+Content-Length: 22
+
+{"name":"tanknight"}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+"name":"&lt;name&gt;"}</code></pre>
+
+            <h3>PUT /api/groups/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Update group details. Protected roles cannot be modified.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>PUT /api/groups/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+Content-Length: 22
+
+{"name":"&lt;name&gt;"}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+"name":"&lt;name&gt;"}</code></pre>
+
+            <h3>DELETE /api/groups/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Delete a group. Protected roles cannot be deleted.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>DELETE /api/groups/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 204 No Content
+Content-Type: application/json</code></pre>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details>
+      <summary>Content Management</summary>
+      <div>
+        <details>
+          <summary>Media</summary>
+          <div>
+            <h4>Permissions Matrix</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Super Admin</th>
+                  <th>Administrator</th>
+                  <th>Editor</th>
+                  <th>Author</th>
+                  <th>Contributor</th>
+                  <th>Subscriber</th>
+                  <th>Anonymous</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>create_media (POST /api/media/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>read_media (GET /api/media/{id}/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>list_media (GET /api/media/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>delete_media (DELETE /api/media/{id}/)</strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>download_media (GET /media/{filename})</strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>GET /api/media/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                List media files.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/media/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+[{"id":&lt;id1&gt;,
+"name":"&lt;name1&gt;",
+"file":"&lt;filepath1&gt;",
+"author":"&lt;author_id1&gt;",
+"author_username":"&lt;author_username1&gt;",
+"created_at":"&lt;created_at1&gt;",
+"updated_at":"&lt;updated_at1&gt;"},
+
+{"id":&lt;id2&gt;,
+"name":"&lt;name2&gt;",
+"file":"&lt;filepath2&gt;",
+"author":"&lt;author_id2&gt;",
+"author_username":"&lt;author_username2&gt;",
+"created_at":"&lt;created_at2&gt;",
+"updated_at":"&lt;updated_at2&gt;"}]</code></pre>
+
+            <h3>GET /api/media/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Retrieve media file details.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/media/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+{"id":&lt;id&gt;,
+"name":"&lt;name&gt;",
+"file":"&lt;filepath&gt;",
+"author":"&lt;author_id&gt;",
+"author_username":"&lt;author_username&gt;",
+"created_at":"&lt;created_at&gt;",
+"updated_at":"&lt;updated_at&gt;"}</code></pre>
+
+            <h3>POST /api/media/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Upload a media file. Max size 5MB. Allowed extensions: jpg, png,
+                pdf.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/media/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarycw6o8wG810ecWl8V
+Content-Length: 281
+
+------WebKitFormBoundarycw6o8wG810ecWl8V
+Content-Disposition: form-data; name="name"
+
+&lt;name&gt;
+------WebKitFormBoundarycw6o8wG810ecWl8V
+Content-Disposition: form-data; name="file"; filename="&lt;filename&gt;"
+Content-Type: text/plain
+
+&lt;file&gt;
+------WebKitFormBoundarycw6o8wG810ecWl8V--</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+{"id":&lt;id&gt;,
+"name":"&lt;name&gt;",
+"file":"&lt;filepath&gt;",
+"author":"&lt;author_id&gt;",
+"author_username":"&lt;author_username&gt;",
+"created_at":"&lt;created_at&gt;",
+"updated_at":"&lt;updated_at&gt;"}</code></pre>
+
+            <h3>DELETE /api/media/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Delete a media file.
+              </li>
+            </ul>
+            <pre><code>DELETE /api/media/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 204 No Content</code></pre>
+
+            <h3>GET /media/{filename}</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Download a media file.
+              </li>
+            </ul>
+            <pre><code>GET /media/{filename} HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+
+&lt;file content&gt;</code></pre>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details>
+      <summary>System</summary>
+      <div>
+        <details>
+          <summary>Plugins</summary>
+          <div>
+            <h4>Permissions Matrix</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Super Admin</th>
+                  <th>Administrator</th>
+                  <th>Editor</th>
+                  <th>Author</th>
+                  <th>Contributor</th>
+                  <th>Subscriber</th>
+                  <th>Anonymous</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>create_plugins (POST /api/plugins/)</strong></td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>read_plugins (GET /api/plugins/{id}/)</strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>list_plugins (GET /api/plugins/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>edit_plugins (PUT /api/plugins/{id}/)</strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>delete_plugins (DELETE /api/plugins/{id}/)</strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>
+                      activate_plugins (POST /api/plugins/{id}/activate/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>
+                      deactivate_plugins (POST /api/plugins/{id}/deactivate/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>GET /api/plugins/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                List plugins.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/plugins/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 0
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+[{"id":&lt;id1&gt;,
+"name":"&lt;name1&gt;",
+"version":"&lt;version1&gt;",
+"is_active":&lt;is_active1&gt;,
+"settings":{
+  "&lt;settings1&gt;"
+},
+
+{"id":&lt;id2&gt;,
+"name":"&lt;name2&gt;",
+"version":"&lt;version2&gt;",
+is_active:&lt;is_active2&gt;,
+"settings":{
+  "&lt;settings2&gt;"
+  }
+}]</code></pre>
+
+            <h3>POST /api/plugins/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Add a plugin.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/plugins/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 44
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+
+{"name":"&lt;name&gt;",
+"version":"&lt;version&gt;"}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+
+{"id":"&lt;id&gt;",
+"name":"&lt;name&gt;",
+"version":"&lt;version&gt;",
+"is_active":&lt;is_active&gt;,
+"settings":{}}</code></pre>
+
+            <h3>PUT /api/plugins/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Update a plugin.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>PUT /api/plugins/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 44
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+
+{"name":"&lt;name&gt;",
+"version":"&lt;version&gt;"}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":"&lt;id&gt;",
+"name":"&lt;name&gt;",
+"version":"&lt;version&gt;",
+"is_active":&lt;is_active&gt;,
+"settings":{},
+"created_at":"&lt;created_at&gt;",
+"updated_at":"&lt;updated_at&gt;"
+}</code></pre>
+            <h3>DELETE /api/plugins/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Remove a plugin.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>DELETE /api/plugins/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 0
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 204 No Content
+Content-Type: application/json</code></pre>
+
+            <h3>POST /api/plugins/{id}/activate/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Activate a plugin.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/plugins/{id}/activate/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+{"status":"Plugin '&lt;name&gt;' activated"}</code></pre>
+
+            <h3>POST /api/plugins/{id}/deactivate/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Deactivate a plugin.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/plugins/{id}/deactivate/ HTTP/1.1
+Host: 127.0.0.1:8000
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+{"status":"Plugin '&lt;name&gt;' deactivated"}</code></pre>
+          </div>
+        </details>
+
+        <details>
+          <summary>Themes</summary>
+          <div>
+            <h4>Permissions Matrix</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Super Admin</th>
+                  <th>Administrator</th>
+                  <th>Editor</th>
+                  <th>Author</th>
+                  <th>Contributor</th>
+                  <th>Subscriber</th>
+                  <th>Anonymous</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>create_themes (POST /api/themes/)</strong></td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>read_themes (GET /api/themes/{id}/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>list_themes (GET /api/themes/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><strong>edit_themes (PUT /api/themes/{id}/)</strong></td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>delete_themes (DELETE /api/themes/{id}/)</strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>
+                      activate_themes (POST /api/themes/{id}/activate/)
+                    </strong>
+                  </td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>GET /api/themes/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                List all themes.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/themes/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 0
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+[{"id":&lt;id1&gt;,
+"name":"&lt;name1&gt;",
+"version":"&lt;version1&gt;",
+"is_active":&lt;is_active1&gt;,
+"options":{
+    "&lt;options1&gt;"
+}
+},
+
+{"id":&lt;id2&gt;,
+"name":"&lt;name2&gt;",
+"version":"&lt;version2&gt;",
+is_active:&lt;is_active2&gt;,
+"options":{
+    "&lt;options2&gt;"
+}
+}]</code></pre>
+
+            <h3>POST /api/themes/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Create a new theme. Default
+                <code>is_active</code>
+                is
+                <code>false</code>
+                .
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/themes/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 35
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+
+{"name":"&lt;name&gt;", "version":"&lt;version&gt;"}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 201 Created
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+ "name":"&lt;name&gt;",
+ "version":"&lt;version&gt;",
+ "is_active":&lt;is_active&gt;,
+ "options":&lt;options&gt;,
+ "created_at":"&lt;created_at&gt;",
+ "updated_at":"&lt;updated_at&gt;"}</code></pre>
+
+            <h3>GET /api/themes/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Retrieve theme details.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>GET /api/themes/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 2
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":&lt;id&gt;,
+"name":"&lt;name&gt;",
+"version":"&lt;version&gt;",
+"is_active":&lt;is_active&gt;,
+"options":&lt;options&gt;,
+"created_at":"&lt;created_at&gt;",
+"updated_at":"&lt;updated_at&gt;"}</code></pre>
+
+            <h3>PUT /api/themes/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Update theme details.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>PUT /api/themes/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 70
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json
+
+{"name":"&lt;name&gt;", "version":"&lt;version&gt;"}</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id": &lt;id&gt;,
+"name":"&lt;name&gt;",
+"version":"&lt;version&gt;",
+"is_active":&lt;is_active&gt;,
+"options":&lt;options&gt;,
+"created_at":"&lt;created_at&gt;",
+"updated_at":"&lt;updated_at&gt;"}</code></pre>
+
+            <h3>DELETE /api/themes/{id}/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Remove a theme.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>DELETE /api/themes/{id}/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 0
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 204 No Content
+Content-Type: application/json</code></pre>
+
+            <h3>POST /api/themes/{id}/activate/</h3>
+            <ul>
+              <li>
+                <strong>Description:</strong>
+                Activate a theme.
+              </li>
+            </ul>
+            <p><strong>Request</strong></p>
+            <pre><code>POST /api/themes/{id}/activate/ HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Length: 0
+Authorization: Token &lt;Token&gt;
+Content-Type: application/json</code></pre>
+            <p><strong>Response:</strong></p>
+            <pre><code>HTTP/1.1 204 No Content
+Content-Type: application/json
+{"status":"Theme '&lt;name&gt;' activated"}</code></pre>
+          </div>
+        </details>
+      </div>
+    </details>
+  </body>
+</html>

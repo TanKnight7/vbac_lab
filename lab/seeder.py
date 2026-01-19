@@ -33,7 +33,7 @@ def clear_data():
     Theme.objects.all().delete()
     Media.objects.all().delete()
     Post.objects.all().delete()
-    # User.objects.filter(is_superuser=False).delete()
+    User.objects.all().delete()
     print("✅ Data cleared")
 
 def create_groups():

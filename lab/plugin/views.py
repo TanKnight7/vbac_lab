@@ -20,11 +20,13 @@ class PluginViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         actions = {
             'create': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin')],
-            'update': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
+            # 'update': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
+            'update': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator','Editor')],
             'destroy': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
             'retrieve': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
-            'list': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
-            'activate': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
+            # 'list': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')],
+            'list': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator','Subscriber')],
+            'activate': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator', 'Author')],
             'deactivate': [permissions.IsAuthenticated(), AnyOfGroups('Super Admin', 'Administrator')]
         }
         return actions.get(self.action, [permissions.AND(permissions.IsAuthenticated(), permissions.NOT(permissions.IsAuthenticated()))])
