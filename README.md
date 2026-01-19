@@ -178,5 +178,3 @@ Your AI is now ready to:
 
 * Generate VBAC testing scenarios
 * Detect Vertical Broken Access Control Vulnerabilities
-
-```
